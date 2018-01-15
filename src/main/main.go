@@ -41,15 +41,30 @@ HandleFunc -> handlerFunc
 
 package main
 
-import "net/http"
+import (
+    "net/http"
+    "log"
+)
 
 func main() {
-    http.HandleFunc("/", someFunc)
+    http.HandleFunc("/", renderDefault)
+    http.HandleFunc("/version", renderVersion)
     http.ListenAndServe(":8080", nil)
 }
 
-func someFunc(w http.ResponseWriter, req *http.Request) {
-    w.Write([]byte("Hello universe"))
+
+
+func renderDefault(w http.ResponseWriter, req *http.Request) {
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Write([]byte("Try "+req.Host+"/version"))
+}
+
+
+func renderVersion(w http.ResponseWriter, req *http.Request) {
+    //log.Println(req.Header)
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Content-Type", "application/json")
+    w.Write([]byte("{version : 1.0}"))
 }
 
 /*
